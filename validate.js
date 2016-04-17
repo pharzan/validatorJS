@@ -1,33 +1,42 @@
 
-function V(){
-    this.results=[];
+var v=(function V(){
+      if (!(this instanceof V)) {
+	  return new V();
+      }
+    var _results=[];
+    
     this.validate=function (expressions){
 	var self=this;
 	expressions.map(function(exp){
 	    if(exp.result){
-		self.results.push(null);
+		_results.push(null);
 		if (typeof exp.pass=='function')
-		exp.pass(exp.message);
+		    exp.pass(exp.message);
 	    }
 	    else{
-		self.results.push(exp.message);
+		_results.push(exp.message);
 		if (typeof exp.fail=='function')
 		    exp.fail(exp.message);
 	    }
 	    
-	    
 	});
+	return _getErrorsThenReset();
+    };
+    
+    this.set=function(result,msg,failFn,passFn){
+	return {result:result,
+		message:msg,
+		fail:failFn,
+		pass:passFn
+	       };
     };
 
     this.isNumber= function(value) {
-	
 	return typeof value === 'number' && !isNaN(value);
-		
     };
 
     this.isString = function(value){
 	return typeof value === 'string';
-		
     };
 
     this.isArray= function(value){
@@ -44,39 +53,33 @@ function V(){
 	return /^[A-Za-z0-9]+$/.test(value);
     };
 
-    this.actions=function(result,msg,failFn,passFn){
-	return {result:result,
-		message:msg,
-		fail:failFn,
-		pass:passFn
-	       };
-    };
-
-    this.errors=function(){
-	return this.results;
+    _getErrorsThenReset=function(){
+	var tmpResults=_results;
+	_results=[];
+	return tmpResults;
     };
   
-}
-var v=new V();
+})()
+
 
 
 var inp=33;
-v.validate([
-    v.actions(v.isString(inp),'is not a string',
+var result=v.validate([
+    v.set(v.isString(inp),'is not a string',
 	      function(msg){console.log('warning: %s',inp,msg);},
 	      function(msg){console.log('pass: %s',inp,msg);}
 	     ),
-    v.actions(v.isNumber(inp),'is A number',
+    v.set(v.isNumber(inp),'is A number',
 	      null,
 	      function(msg){console.log('pass: %s',inp,msg);}),
-    v.actions(v.isArray([]),'is not an array',
+    v.set(v.isArray([]),'is not an array',
 	      null,
 	      function(msg){console.log('pass: %s',inp,msg);})
 
 
 ]);
 
-console.log(v.errors())
+console.log(result)
 
-console.log(v.isEmail('aad@ '))
-console.log(v.isAlphaNumeric('aadaskfjdFASDfajskdh.3138137'))
+// console.log(v.isEmail('aad@ '))
+// console.log(v.isAlphaNumeric('aadaskfjdFASDfajskdh.3138137'))
