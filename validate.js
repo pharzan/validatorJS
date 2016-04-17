@@ -19,15 +19,29 @@ function V(){
 	});
     };
 
-    this.isNumber= function(value,msg) {
+    this.isNumber= function(value) {
 	
 	return typeof value === 'number' && !isNaN(value);
 		
     };
 
-    this.isString = function(value,msg){
+    this.isString = function(value){
 	return typeof value === 'string';
 		
+    };
+
+    this.isArray= function(value){
+	return Array.isArray(value);
+    };
+
+    this.isEmail=function(value){
+	var at=(value.indexOf('@')===-1)?false:true,
+	    dot=(value.indexOf('.')===-1)?false:true;
+	return at && dot;
+    };
+
+    this.isAlphaNumeric=function(value){
+	return /^[A-Za-z0-9]+$/.test(value);
     };
 
     this.actions=function(result,msg,failFn,passFn){
@@ -41,17 +55,7 @@ function V(){
     this.errors=function(){
 	return this.results;
     };
-    this.test=function(){
-	console.log('1')
-	return this
-    }
-    
-    
-    this.test1=function(){
-	console.log('2')
-	return this
-    }
-    
+  
 }
 var v=new V();
 
@@ -64,8 +68,15 @@ v.validate([
 	     ),
     v.actions(v.isNumber(inp),'is A number',
 	      null,
+	      function(msg){console.log('pass: %s',inp,msg);}),
+    v.actions(v.isArray([]),'is not an array',
+	      null,
 	      function(msg){console.log('pass: %s',inp,msg);})
+
+
 ]);
 
 console.log(v.errors())
-v.test().test1()
+
+console.log(v.isEmail('aad@ '))
+console.log(v.isAlphaNumeric('aadaskfjdFASDfajskdh.3138137'))
