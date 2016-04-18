@@ -3,42 +3,65 @@ exports.Validate = (function V() {
         return new V();
     }
     var _results = [];
+    var _errors=[];
 
-    this.validate = function(expressions) {
-        var self = this;
-        if (Array.isArray(expressions)) {
-            expressions.map(function(exp) {
-                if (exp.result) {
-                    _results.push(null);
-                    if (typeof exp.pass == 'function')
-                        exp.pass(exp.message);
-                } else {
-                    _results.push(exp.message);
-                    if (typeof exp.fail == 'function')
-                        exp.fail(exp.message);
-                }
+    
 
-            });
-	    return _getErrorsThenReset();
-        }
-        
+    this.validate = function(result, onFail, onPass) {
+	
+	for(idx in arguments){
+	    if (Array.isArray(arguments[idx])) 
+		_validate(arguments[idx][0],arguments[idx][1],arguments[idx][2]);
+	    else
+		_validate(false, 'format mismatch',null);
+	}
+	
+        console.log('>>>>',_errors);
     };
 
-    this.set = function(result, msg, failFn, passFn) {
-        return {
-            result: result,
-            message: msg,
-            fail: failFn,
-            pass: passFn
-        };
+    _validate=function(result,onFail,onPass){
+	var r;
+	
+	if(result){
+	    if(typeof onPass==='function'){
+		r=onPass.call(this,this);
+		
+		if(typeof r!==undefined)
+		    _updateErrors(r);
+		
+	    }
+	    else if(typeof onPass==='string'){
+		_updateErrors(onPass);
+		return onFail;
+	    }
+	    else
+		_updateErrors(null);
+	}else if(!result){
+	    if(typeof onFail==='function'){
+		r=onFail.call(this,this);
+		if(typeof r!==undefined)
+		    _updateErrors(r);
+	    }
+
+	    if(typeof onFail==='string'){
+		_updateErrors(onFail);
+		return onFail;
+	    }
+	    else
+		_updateErrors(false);
+	}
+	
     };
-
-
+    
     _getErrorsThenReset = function() {
 
         var tmpResults = _results;
         _results = [];
         return tmpResults;
+    };
+
+    _updateErrors = function(r){	
+	_errors.push(r);
     };
 
 })();
