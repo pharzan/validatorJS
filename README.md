@@ -3,11 +3,10 @@
 A Basic validator implementation, which checks if a value is valid and as expected and executes the corresponding callback function as needed:
 
 
-
 *usage and explanation:*
 validate.js exports two modules:
 * Validate <- for validation purposes
-* Checks <- the is utilities example isArray is in here.
+* Checks <- the isBlah() utilities are here (for example isArray is in here).
 
 If you have your own check functions there is _no need_ to import the check functions.
 
@@ -21,7 +20,7 @@ The v object is instntiated when imported and now it can be used to call the val
 
 >v.validate([v.set(checkFn,message,failCallback,passCallback)]);
 
-So 
+Keep in mind to pass in an array even if you only have one validation set.
 
 ```javascript
 var result=v.validate([
