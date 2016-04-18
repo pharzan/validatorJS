@@ -57,17 +57,16 @@ var assert = require("assert");
 // 			     null)]);
 // console.log(result)
 
-var result=v.Validate(
-    [c.isString('hello'),null,null],
-    [c.isString(33),null,null],
-    [c.isString('hello'),null,function onPass(){return "Wow! it's a string!";}],
-    [c.isString(33),function onFail(){return "nope! it's not a string!";},null],
-    [c.isString(33),"nope! it's not a string!",null],
-    "nope! it's not a string!"
-
+var result=v.validate(
+    [c.isString('hello'),null,null]
+    //[c.isString(33),null,null]
+    // [c.isString('hello'),null,function onPass(){return "Wow! it's a string!";}]
+    //[c.isString(33),function onFail(){return "nope! it's not a string!";},null]
+    // [c.isString(33),"nope! it's not a string!",null]
+    // "nope! it's not a string!"
 );
 
-// console.log('>>>>>>>>',result)
+console.log(result);
 // console.log(c.isEmail('aad@ '))
 // console.log(c.isAlphaNumeric('aadaskfjdFASDfajskdh.3138137'))
 

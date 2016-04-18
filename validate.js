@@ -3,65 +3,60 @@ exports.Validate = (function V() {
         return new V();
     }
     var _results = [];
-    var _errors=[];
+    var _errors = [];
 
-    
+
 
     this.validate = function(result, onFail, onPass) {
-	
-	for(idx in arguments){
-	    if (Array.isArray(arguments[idx])) 
-		_validate(arguments[idx][0],arguments[idx][1],arguments[idx][2]);
-	    else
-		_validate(false, 'format mismatch',null);
-	}
-	
-        console.log('>>>>',_errors);
+
+        for (idx in arguments) {
+            if (Array.isArray(arguments[idx]))
+                _validate(arguments[idx][0], arguments[idx][1], arguments[idx][2]);
+            else
+                _validate(false, 'format mismatch', null);
+        };
+	return _getErrorsThenReset();
     };
 
-    _validate=function(result,onFail,onPass){
-	var r;
-	
-	if(result){
-	    if(typeof onPass==='function'){
-		r=onPass.call(this,this);
-		
-		if(typeof r!==undefined)
-		    _updateErrors(r);
-		
-	    }
-	    else if(typeof onPass==='string'){
-		_updateErrors(onPass);
-		return onFail;
-	    }
-	    else
-		_updateErrors(null);
-	}else if(!result){
-	    if(typeof onFail==='function'){
-		r=onFail.call(this,this);
-		if(typeof r!==undefined)
-		    _updateErrors(r);
-	    }
+    _validate = function(result, onFail, onPass) {
+        var r;
 
-	    if(typeof onFail==='string'){
-		_updateErrors(onFail);
-		return onFail;
-	    }
-	    else
-		_updateErrors(false);
-	}
-	
+        if (result) {
+            if (typeof onPass === 'function') {
+                r = onPass.call(this, this);
+
+                if (typeof r !== undefined)
+                    _updateErrors(r);
+
+            } else if (typeof onPass === 'string') {
+                _updateErrors(onPass);
+                return onFail;
+            } else
+                _updateErrors(true);
+	    
+        } else if (!result) {
+            if (typeof onFail === 'function') {
+                r = onFail.call(this, this);
+                if (typeof r !== undefined)
+                    _updateErrors(r);
+            }else if (typeof onFail === 'string') {
+                _updateErrors(onFail);
+                return onFail;
+            } else
+                _updateErrors(false);
+        }
+
     };
-    
+
     _getErrorsThenReset = function() {
 
-        var tmpResults = _results;
-        _results = [];
+        var tmpResults = _errors;
+        _errors = [];
         return tmpResults;
     };
 
-    _updateErrors = function(r){	
-	_errors.push(r);
+    _updateErrors = function(r) {
+        _errors.push(r);
     };
 
 })();
