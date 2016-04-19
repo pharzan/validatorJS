@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Validatorjs by pharzan</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Validatorjs</h1>
+        <p>An implementation to check if a value is valid and as expected and execute the correct function.</p>
+
+        <p class="view"><a href="https://github.com/pharzan/validatorJS">View the Project on GitHub <small>pharzan/validatorJS</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/pharzan/validatorJS/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/pharzan/validatorJS/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/pharzan/validatorJS">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="vjs" class="anchor" href="#vjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><strong>Vjs</strong>
+</h1>
+
+<p>A Basic validator implementation, which checks if a value is valid and as expected and executes the corresponding callback function as needed, and at the end of the check if a callback for the whole test exists it will execute the corresponding callback.</p>
+
+
+
+<p><strong>Structure:</strong>
+validate.js exports two modules:</p>
+
+<ul>
+<li>Validate &lt;- for validation purposes</li>
+<li>Checks &lt;- the isBlah() utilities are here (for example isArray is in here). </li>
+</ul>
+
+<p><strong>Usage and Explanation &amp; consedirations:</strong></p>
+
+<ul>
+<li>if the the check function fails
+
+<ul>
+<li>if there is no callback or string defined -&gt; the return value will be false</li>
+<li>if there is a callback or string defined -&gt; the return value will be the string or the return of the function</li>
+</ul>
+</li>
+<li>if the the check function passes 
+
+<ul>
+<li>if there is no callback or string defined -&gt; the return value will be true</li>
+<li>if there is a callback or string defined -&gt; the return value will be the string or the return of the function</li>
+</ul>
+</li>
+<li>the return value of validate is an array.</li>
+<li>If you have your own check functions there is <em>no need</em> to import the check functions.</li>
+</ul>
+
+<p>Import the Vjs validate method and the check utils.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> v<span class="pl-k">=</span><span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>../validate.js<span class="pl-pds">'</span></span>).<span class="pl-smi">Validate</span>;
+<span class="pl-k">var</span> c<span class="pl-k">=</span><span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>../validate.js<span class="pl-pds">'</span></span>).<span class="pl-smi">Check</span>;</pre></div>
+
+<p>The v object is instantiated when imported and now it can be used to call the validate method accompanied with the set method to set the validations.</p>
+
+<blockquote>
+<p>result=v.validate([v.validate([c.isString('hello'),
+                    onFail,
+                    onPass
+                ],
+                [v.validate([c.isString(1984),
+                    onFail,
+                    onPass
+                ],
+                [outerFail,outerPass]);</p>
+</blockquote>
+
+<p>onFail and onPass can be a string or a function. On each of the corresponding states either the string is returned or a return value from a function is retuned.
+After the validation finishes if there is a fail the outerFail will execute or if all is passed the outerPass is executed.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> result<span class="pl-k">=</span><span class="pl-smi">v</span>.<span class="pl-en">validate</span>([
+                        <span class="pl-smi">c</span>.<span class="pl-en">isString</span>(<span class="pl-s"><span class="pl-pds">'</span>hello<span class="pl-pds">'</span></span>),
+                        <span class="pl-s"><span class="pl-pds">'</span>failed is a string<span class="pl-pds">'</span></span>,
+                        <span class="pl-s"><span class="pl-pds">'</span>passed is a string<span class="pl-pds">'</span></span>)
+          ]);
+
+<span class="pl-en">console</span>.<span class="pl-c1">log</span>(result[<span class="pl-c1">0</span>]) <span class="pl-c">//  passed is a string</span>
+
+<span class="pl-k">var</span> result<span class="pl-k">=</span><span class="pl-smi">v</span>.<span class="pl-en">validate</span>([
+                        <span class="pl-smi">c</span>.<span class="pl-en">isString</span>(<span class="pl-s"><span class="pl-pds">'</span>hello<span class="pl-pds">'</span></span>),
+                        <span class="pl-s"><span class="pl-pds">'</span>failed is a string<span class="pl-pds">'</span></span>,
+                        <span class="pl-s"><span class="pl-pds">'</span>passed is a string<span class="pl-pds">'</span></span>)
+          ],
+          [
+                        <span class="pl-smi">c</span>.<span class="pl-en">isString</span>(<span class="pl-c1">33</span>),
+                        <span class="pl-s"><span class="pl-pds">'</span>failed is a string<span class="pl-pds">'</span></span>,
+                        <span class="pl-s"><span class="pl-pds">'</span>passed is a string<span class="pl-pds">'</span></span>)
+          ]
+          );
+
+<span class="pl-en">console</span>.<span class="pl-c1">log</span>(result[<span class="pl-c1">0</span>]) <span class="pl-c">//  passed is a string</span>
+<span class="pl-en">console</span>.<span class="pl-c1">log</span>(result[<span class="pl-c1">1</span>]) <span class="pl-c">//  failed is a string</span>
+</pre></div>
+
+<p>or in the above examples instead of the strings a function may be used as</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> <span class="pl-en">myOnFail</span><span class="pl-k">=</span><span class="pl-k">function</span>(){
+             <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">'</span>failed is a string<span class="pl-pds">'</span></span>
+    }
+<span class="pl-k">var</span> <span class="pl-en">myOnPass</span><span class="pl-k">=</span><span class="pl-k">function</span>(){
+             <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">'</span>passed is a string<span class="pl-pds">'</span></span>
+    }
+
+
+<span class="pl-k">var</span> result<span class="pl-k">=</span><span class="pl-smi">v</span>.<span class="pl-en">validate</span>([
+                        <span class="pl-smi">c</span>.<span class="pl-en">isString</span>(<span class="pl-s"><span class="pl-pds">'</span>hello<span class="pl-pds">'</span></span>),
+                        myOnFail,
+                        myOnPass)
+          ],
+          [
+                        <span class="pl-smi">c</span>.<span class="pl-en">isString</span>(<span class="pl-c1">33</span>),
+                        myOnFail,
+                        myOnPass)
+          ]
+          );
+
+<span class="pl-en">console</span>.<span class="pl-c1">log</span>(result[<span class="pl-c1">0</span>]) <span class="pl-c">//  passed is a string</span>
+<span class="pl-en">console</span>.<span class="pl-c1">log</span>(result[<span class="pl-c1">1</span>]) <span class="pl-c">//  failed is a string</span>
+</pre></div>
+
+<h3>
+<a id="links" class="anchor" href="#links" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Links:</h3>
+
+<ul>
+<li>
+<a href="https://github.com/pharzan/validatorJS">GitHub</a> page</li>
+<li><a href="https://jsfiddle.net/pharzan/yhqa3zsn/1/">jsFiddle</a></li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/pharzan">pharzan</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
