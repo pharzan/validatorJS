@@ -7,15 +7,17 @@ exports.Validate = (function V() {
     var _failed = false;
 
     this.validate = function(result, onFail, onPass) {
+        _failed = false;
         var failCallback,
             passCallback;
         for (idx in arguments) {
+
             var firstArg = arguments[idx][0] || false,
                 secondArg = arguments[idx][1] || null,
                 thirdArg = arguments[idx][2] || null;
 
 
-            if (arguments[idx].length == 2 && idx == arguments.length - 1) {
+            if (_isExecArray(arguments[idx])) {
                 failCallback = firstArg;
                 passCallback = secondArg;
 
@@ -46,6 +48,7 @@ exports.Validate = (function V() {
                 _updateErrors(true);
 
         } else if (!result) {
+
             _failed = true;
             if (typeof onFail === 'function') {
                 r = onFail.call(this, this);
@@ -61,11 +64,11 @@ exports.Validate = (function V() {
     };
 
     _runCallback = function(fail, pass) {
-     
+
         if ((typeof fail == 'function') || (typeof pass == 'function')) {
             if (_failed)
                 fail();
-            else
+            else if (!_failed)
                 pass();
         }
     };
@@ -79,6 +82,14 @@ exports.Validate = (function V() {
 
     _updateErrors = function(r) {
         _errors.push(r);
+    };
+
+    _isExecArray = function(args) {
+        var firstArg = args[0],
+            secondArg = args[1],
+            thirdArg = args[2];
+
+        return (typeof firstArg == 'function' || typeof secondArg == 'function' && typeof thirdArg == 'undefined');
     };
 
 })();
