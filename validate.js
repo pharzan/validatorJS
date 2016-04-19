@@ -4,23 +4,32 @@ exports.Validate = (function V() {
     }
     var _results = [];
     var _errors = [];
-
-
+    var _failed = false;
 
     this.validate = function(result, onFail, onPass) {
 
         for (idx in arguments) {
-            if (Array.isArray(arguments[idx]))
-                _validate(arguments[idx][0], arguments[idx][1], arguments[idx][2]);
-            else
+            var firstArg = arguments[idx][0],
+                secondArg = arguments[idx][1] || null,
+                thirdArg = arguments[idx][2] || null;
+	    
+            if (Array.isArray(arguments[idx])){
+		console.log(">>>>",firstArg,secondArg,thirdArg)
+                _validate(firstArg, secondArg, thirdArg);
+	    }
+            else if (arguments[idx].length === 2 && idx==arguments.length-1) {
+                if ((typeof firstArg == 'function') && (typeof secondArg == 'function')){
+		    console.log(_failed)
+                }
+            } else
                 _validate(false, 'format mismatch', null);
         };
-	return _getErrorsThenReset();
+        return _getErrorsThenReset();
     };
 
     _validate = function(result, onFail, onPass) {
         var r;
-
+	
         if (result) {
             if (typeof onPass === 'function') {
                 r = onPass.call(this, this);
@@ -33,13 +42,14 @@ exports.Validate = (function V() {
                 return onFail;
             } else
                 _updateErrors(true);
-	    
+
         } else if (!result) {
+	    _failed=true;
             if (typeof onFail === 'function') {
                 r = onFail.call(this, this);
                 if (typeof r !== undefined)
                     _updateErrors(r);
-            }else if (typeof onFail === 'string') {
+            } else if (typeof onFail === 'string') {
                 _updateErrors(onFail);
                 return onFail;
             } else

@@ -58,15 +58,20 @@ var assert = require("assert");
 // console.log(result)
 
 var result=v.validate(
-    [c.isString('hello'),null,null]
-    //[c.isString(33),null,null]
-    // [c.isString('hello'),null,function onPass(){return "Wow! it's a string!";}]
-    //[c.isString(33),function onFail(){return "nope! it's not a string!";},null]
-    // [c.isString(33),"nope! it's not a string!",null]
+    [c.isString('hello'),null,null],
+    [c.isString('hello')],
+    // [c.isString('hello'),'hi, you wont see me'],
+    // [c.isString('hello'),'hi, you wont see me','you will see me!'],
+    // [c.isString('33'),null,null],
+    // [c.isString('hello'),null,function onPass(){return "Wow! it's a string!";}],
+    // [c.isString('33'),function onFail(){return "function returned:: nope! it's not a string!";},null],
+    // [c.isString('33'),"nope! it's not a string!",null],
+    // [c.isString('33'),"nope! it's not a string!",'Yup! on the track'],
+    [function(){},function(){}]
     // "nope! it's not a string!"
 );
 
-console.log(result);
+console.log("RES: ",result);
 // console.log(c.isEmail('aad@ '))
 // console.log(c.isAlphaNumeric('aadaskfjdFASDfajskdh.3138137'))
 
