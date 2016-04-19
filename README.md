@@ -92,6 +92,11 @@ console.log(result[0]) //  passed is a string
 console.log(result[1]) //  failed is a string
 
 ```
+### Tests:
+To run the test navigate to the test directory and execute [mocha](http://mochajs.org).
+```sh
+mocha
+```
 
 ### Links:
 
