@@ -56,10 +56,13 @@ var assert = require("assert");
 // 			     null,
 // 			     null)]);
 // console.log(result)
+var onFail=function(someMessage){
+    console.log('fail: ',someMessage);
 
+}
 var result=v.validate(
     [c.isString('hello'),null,null],
-    [c.isString('hello')],
+    [c.isString('33')],
     // [c.isString('hello'),'hi, you wont see me'],
     // [c.isString('hello'),'hi, you wont see me','you will see me!'],
     // [c.isString('33'),null,null],
@@ -67,7 +70,7 @@ var result=v.validate(
     // [c.isString('33'),function onFail(){return "function returned:: nope! it's not a string!";},null],
     // [c.isString('33'),"nope! it's not a string!",null],
     // [c.isString('33'),"nope! it's not a string!",'Yup! on the track'],
-    [function(){},function(){}]
+    [function(){onFail('oh oh');},function(){console.log('yeay!');}]
     // "nope! it's not a string!"
 );
 

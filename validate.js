@@ -7,29 +7,31 @@ exports.Validate = (function V() {
     var _failed = false;
 
     this.validate = function(result, onFail, onPass) {
-
+        var failCallback,
+            passCallback;
         for (idx in arguments) {
-            var firstArg = arguments[idx][0],
+            var firstArg = arguments[idx][0] || false,
                 secondArg = arguments[idx][1] || null,
                 thirdArg = arguments[idx][2] || null;
-	    
-            if (Array.isArray(arguments[idx])){
-		console.log(">>>>",firstArg,secondArg,thirdArg)
+
+
+            if (arguments[idx].length == 2 && idx == arguments.length - 1) {
+                failCallback = firstArg;
+                passCallback = secondArg;
+
+            } else if (Array.isArray(arguments[idx])) {
                 _validate(firstArg, secondArg, thirdArg);
-	    }
-            else if (arguments[idx].length === 2 && idx==arguments.length-1) {
-                if ((typeof firstArg == 'function') && (typeof secondArg == 'function')){
-		    console.log(_failed)
-                }
+
             } else
                 _validate(false, 'format mismatch', null);
         };
+        _runCallback(failCallback, passCallback);
         return _getErrorsThenReset();
     };
 
     _validate = function(result, onFail, onPass) {
         var r;
-	
+
         if (result) {
             if (typeof onPass === 'function') {
                 r = onPass.call(this, this);
@@ -44,7 +46,7 @@ exports.Validate = (function V() {
                 _updateErrors(true);
 
         } else if (!result) {
-	    _failed=true;
+            _failed = true;
             if (typeof onFail === 'function') {
                 r = onFail.call(this, this);
                 if (typeof r !== undefined)
@@ -56,6 +58,16 @@ exports.Validate = (function V() {
                 _updateErrors(false);
         }
 
+    };
+
+    _runCallback = function(fail, pass) {
+     
+        if ((typeof fail == 'function') || (typeof pass == 'function')) {
+            if (_failed)
+                fail();
+            else
+                pass();
+        }
     };
 
     _getErrorsThenReset = function() {
